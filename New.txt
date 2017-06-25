@@ -1,0 +1,17 @@
+[24/06/2017]:
+- Cap nhat gia tri trong class Topic.java
+- Cap nhat them truong cloneNumber trong ham getListTopic trong class TopicDAO.java
+- Cap nhat cho button clone trong class manageTopicAdmin.jsp
+- Them ham getTopicID trong class TopicDAO.java
+- Them ham getCloneNumbertrong class TopicDAO.java
+- Them ham cloneTopictrong class TopicDAO.java
+[25/06/2017]:
+- Them ham getTopicID, checkTopicName trong class TopicBO.java
+- Them ham checkTopicName trong class TopicDAO.java
+- Cap nhat class CreateTopicAdminServlet.java
+- Tao class createTopic.jsp
+- Xoa class createTopicAdmin.jsp
+- Cap nhat ham cloneTopic trong class TopicDAO.java
+- Them ham addTopic trong class TopicDAO.java
+- Tao class CreateQuizServlet.java
+- Tao class createQuiz.jsp
