@@ -1,0 +1,143 @@
+select ex.addressIP
+from [STUDENT] st
+INNER JOIN [EXAM] as ex on ex.studentID=st.studentID
+INNER JOIN [CLASS] as cl on cl.classID=st.classID
+Where cl.classID = 3 AND ex.topicID = 9
+group by ex.addressIP
+having count(ex.addressIP)>1 
+------------------------------------
+request.setCharacterEncoding("UTF-8");
+		HttpSession session = request.getSession();
+		TopicBO topicBO = new TopicBO();
+		ClassBO classBO = new ClassBO();
+
+		// Kiem tra da dang nhap chua
+		if (session.getAttribute("userName") == null) {
+			response.sendRedirect("LoginServlet");
+			return;
+		}
+
+		// Kiem tra quyen dang nhap
+		if (Constants.STUDENT_RIGHTS.equals(session.getAttribute("type"))) {
+			response.sendRedirect("WelcomeStudentServlet");
+			return;
+		}
+
+		if ("submit".equals(request.getParameter("checkIP"))) {
+			if ("null".equals(request.getParameter("classID"))) {
+				request.setAttribute("nofiClass", "Chua ch?n l?p!");
+			} else if ("null".equals(request.getParameter("topicID"))) {
+				request.setAttribute("nofiTopic", "chua ch?n topic!");
+			} else {
+				String classID = request.getParameter("classID");
+				String topicID = request.getParameter("topicID");
+				
+			}
+			RequestDispatcher rd = request.getRequestDispatcher("checkIP.jsp");
+			rd.forward(request, response);
+
+		} else {
+			ArrayList<Class> listClass = classBO.getListClass();
+			ArrayList<Topic> listTopic = topicBO.getListTopic();
+			request.setAttribute("listClass", listClass);
+			request.setAttribute("listTopic", listTopic);
+			RequestDispatcher rd = request.getRequestDispatcher("checkIP.jsp");
+			rd.forward(request, response);
+		}
+---------------------------------
+<%@page import="vn.fpt.fsoft.intern517.olt.model.bean.Class"%>
+<%@page import="vn.fpt.fsoft.intern517.olt.model.bean.Topic"%>
+<%@page import="java.util.ArrayList"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Ki?m tra IP</title>
+	<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+	<div id = "sidebar" class = "sidebar animate-sidebar" style = "display:none">
+		<ul>
+			<li class = "active"><a onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('overlay').style.display='none';">Thi Tr?c Nghi?m Online</a></li>
+			<li><a href="ManageAdminServlet">Qu?n lý Admin</a></li>
+			<li><a href="ManageClassAdminServlet">Qu?n lý l?p/h?c viên</a></li>
+			<li><a href="ManageTopic.jsp">Qu?n lý Topic</a></li>
+			<li><a href="ResultClass.jsp">L?y k?t qu?</a></li>
+			<li><a href="CheckIP.jsp">Ki?m tra IP</a></li>
+			<li><a href="ResetIP.jsp">Reset IP/Xóa d? li?u</a></li>
+		</ul>
+	</div>
+	
+	<div class = "overlay overlay-sidebar" id = "overlay" onclick="document.getElementById('sidebar').style.display='none'; document.getElementById('overlay').style.display='none';">
+	</div>
+	
+	<div id = "navbar" class = "container-navbar">
+		<ul>
+			<li class = "active">
+				<a onclick="document.getElementById('sidebar').style.display='block'; document.getElementById('overlay').style.display='block';">Thi Tr?c Nghi?m Online</a>
+			</li>
+			<li style="float:right"><a href = "LogoutServlet">Ðang xu?t</a></li>
+			<li style="float:right">
+				<a href = "#Accout">Xin Chào: <%=(String)session.getAttribute("userName") %></a>
+			</li>
+		</ul>	
+	</div>
+	
+	<form>
+		<div class = "container-bar-1">
+			<label style="color:white">Ki?m tra IP gian l?n(trùng)</label>
+			<button style="float:right">Ki?m tra</button>
+		</div>
+	</form>
+	
+	<form action="CheckIPServlet" method="post">
+		<div class = "container-bar-2">
+			<label>Tên l?p:&nbsp;</label>
+			<select name="classID">
+				<option value="null">----Ch?n l?p----</option>
+			<%
+				ArrayList<Class> listClass = (ArrayList<Class>)request.getAttribute("listClass");
+				for(Class classes:listClass){
+			%>
+				<option value="<%=classes.getClassID() %>"><%=classes.getClassName() %></option>
+			<%
+				}
+			%>
+			</select>&nbsp;&nbsp;&nbsp;&nbsp;
+			<label>Tên topic:&nbsp;</label>
+			<select name="topicID">
+				<option value="null">----Ch?n topic----</option>
+			<%
+				ArrayList<Topic> listTopic = (ArrayList<Topic>)request.getAttribute("listTopic");
+				for(Topic topic:listTopic){
+			%>
+				<option value="<%=topic.getTopicID() %>"><%=topic.getTopicName() %></option>
+			<%
+				}
+			%>
+			</select>&nbsp;&nbsp;&nbsp;&nbsp;
+			<input name="topicID" value="<%=request.getAttribute("topicID") %>" style=" display:none">
+			<button type="submit" value="submit" name="checkIP">OK</button>
+		</div>
+	</form>
+	<br>
+	
+	<div class = "container-table-result table-result">
+		<table border="1" width="100%">
+           	<tbody>
+          	 	<tr>
+          	 		<th>Tên h?c viên</th>
+              	  	<th>Ð?a ch? IP trùng</th>
+            	</tr>
+            	<tr>
+              	  <td>10.133.228.183</td>
+              	  <td>2</td>
+            	</tr>
+           	</tbody>
+       	</table>
+	</div>
+	
+</body>
+</html>
