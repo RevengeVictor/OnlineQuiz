@@ -15,3 +15,6 @@
 - Them ham addTopic trong class TopicDAO.java
 - Tao class CreateQuizServlet.java
 - Tao class createQuiz.jsp
+[01/07/2017]:
+- Sua class manageAdmin.jsp
+- Them class addAdmin.jsp
