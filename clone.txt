@@ -1,0 +1,69 @@
+topicDAO:
+public void addTopic(String topicName, String cloneNumber) {
+		String sqlNewTopic = "INSERT INTO [TOPIC](topicName, cloneNumber) VALUES (?,?)";
+
+		// Ket noi va them du lieu trong database
+		try {
+			Connection connection = getMyConnection();
+			PreparedStatement restmt = connection.prepareStatement(sqlNewTopic);
+			restmt.setString(1, topicName);
+			restmt.setString(2, cloneNumber);
+			restmt.executeUpdate();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/*
+	 * Ham clone topic
+	 */
+	public void cloneTopic(String topicID, String topicName, String date) {
+		String sqlCloneTopic = "INSERT INTO [QUIZ](quizName, topicID, answer, maxAnswer) "
+				+ " SELECT q.quizName, t.topicID, q.answer, q.maxAnswer " 
+				+ " FROM [QUIZ] as q, [TOPIC] as t "
+				+ " WHERE q.topicID = ? AND t.topicID = ? ";
+		PreparedStatement restmt = null;
+
+		String newTopicName;
+		
+		try {
+			Connection connection = getMyConnection();
+			String cloneNumber = "" + getCloneNumber(topicID);
+			if ("0".equals(cloneNumber)) {
+				newTopicName = Utils.newTopicName(topicName, date);
+				
+				// Them topic moi
+				addTopic(newTopicName, topicID);
+				
+				// Clone
+				restmt = connection.prepareStatement(sqlCloneTopic);
+				restmt.setString(1, topicID);
+				restmt.setInt(2, getTopicID(newTopicName));
+				restmt.executeUpdate();
+			} else {
+				newTopicName = Utils.newTopicName(getTopicName(cloneNumber), date);
+				addTopic(Utils.newTopicName(getTopicName(cloneNumber), date), cloneNumber);
+				
+				// Clone
+				restmt = connection.prepareStatement(sqlCloneTopic);
+				restmt.setString(1, cloneNumber);
+				restmt.setInt(2, getTopicID(newTopicName));
+				restmt.executeUpdate();
+			}
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+CloneTopicServlet:
+String topicID = request.getParameter("topicID");
+		String topicName = request.getParameter("topicName");
+		DateFormat fm =new SimpleDateFormat("HH:mm:ss a dd/MM/yyyy");
+		String ngay = fm.format(new Date());
+		if ("submit".equals(request.getParameter("submit"))) {
+			topicBO.cloneTopic(topicID, topicName, ngay);
